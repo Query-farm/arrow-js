@@ -122,7 +122,7 @@ export class Message<T extends MessageHeader = any> {
     }
 
     /** @nocollapse */
-    public static from(header: Schema | RecordBatch | DictionaryBatch, bodyLength = 0) {
+    public static from(header: Schema | RecordBatch | DictionaryBatch, bodyLength = 0, metadata?: Map<string, string>) {
         if (header instanceof Schema) {
             return new Message(0, MetadataVersion.V5, MessageHeader.Schema, header);
         }
