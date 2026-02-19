@@ -210,7 +210,7 @@ export class RecordBatchWriter<T extends TypeMap = any> extends ReadableInterop<
 
         if (payload instanceof RecordBatch) {
             if (!(payload instanceof _InternalEmptyPlaceholderRecordBatch)) {
-                this._writeRecordBatch(payload, customMetadata);
+                this._writeRecordBatch(payload);
             }
         } else if (payload instanceof Table) {
             this.writeAll(payload.batches);
@@ -276,7 +276,7 @@ export class RecordBatchWriter<T extends TypeMap = any> extends ReadableInterop<
         return nBytes > 0 ? this._write(new Uint8Array(nBytes)) : this;
     }
 
-    protected _writeRecordBatch(batch: RecordBatch<T>, customMetadata?: Map<string, string>) {
+    protected _writeRecordBatch(batch: RecordBatch<T>) {
         const { byteLength, nodes, bufferRegions, buffers, variadicBufferCounts } = this._assembleRecordBatch(batch);
         const recordBatch = new metadata.RecordBatch(batch.numRows, nodes, bufferRegions, this._compression, variadicBufferCounts, batch.metadata);
         const message = Message.from(recordBatch, byteLength);
