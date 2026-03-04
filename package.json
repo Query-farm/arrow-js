@@ -1,5 +1,5 @@
 {
-  "name": "apache-arrow",
+  "name": "@query-farm/apache-arrow",
   "description": "Apache Arrow columnar in-memory format",
   "bin": {
     "arrow2csv": "bin/arrow2csv.cjs"
