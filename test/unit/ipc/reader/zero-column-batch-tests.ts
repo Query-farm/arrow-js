@@ -16,8 +16,8 @@
 // under the License.
 
 import '../../../jest-extensions.js';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import {
     makeData,
     RecordBatch,
@@ -27,14 +27,14 @@ import {
     tableFromIPC,
 } from 'apache-arrow';
 
-const testDataDir = resolve(process.cwd(), 'test/data');
+const testDataDir = path.resolve(process.cwd(), 'test/data');
 
 describe('Zero-column RecordBatch numRows preservation', () => {
 
     describe('PyArrow interop', () => {
 
         test('should read PyArrow zero-column stream and preserve numRows', () => {
-            const buffer = readFileSync(resolve(testDataDir, 'zero_column_batch.arrow'));
+            const buffer = readFileSync(path.resolve(testDataDir, 'zero_column_batch.arrow'));
             const table = tableFromIPC(buffer);
 
             expect(table.numRows).toBe(100);

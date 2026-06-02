@@ -16,8 +16,8 @@
 // under the License.
 
 import '../../../jest-extensions.js';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import {
     Bool,
     Field,
@@ -33,7 +33,7 @@ import {
     Utf8,
 } from 'apache-arrow';
 
-const pyarrowTestData = resolve(process.cwd(), 'test/data');
+const pyarrowTestData = path.resolve(process.cwd(), 'test/data');
 
 /**
  * Extract the bodyLength for each RecordBatch message from a raw IPC stream buffer.
@@ -190,7 +190,7 @@ describe('Zero-row RecordBatch IPC serialization', () => {
     describe('PyArrow interop - reading PyArrow-generated zero-row IPC streams', () => {
 
         test('should read PyArrow zero-row stream', () => {
-            const pyarrowBuffer = readFileSync(resolve(pyarrowTestData, 'zero_row_stream.arrow'));
+            const pyarrowBuffer = readFileSync(path.resolve(pyarrowTestData, 'zero_row_stream.arrow'));
             const table = tableFromIPC(pyarrowBuffer);
 
             expect(table.numRows).toBe(0);
@@ -203,7 +203,7 @@ describe('Zero-row RecordBatch IPC serialization', () => {
         });
 
         test('PyArrow zero-row stream has bodyLength=8 (offsets buffer for Utf8)', () => {
-            const pyarrowBuffer = readFileSync(resolve(pyarrowTestData, 'zero_row_stream.arrow'));
+            const pyarrowBuffer = readFileSync(path.resolve(pyarrowTestData, 'zero_row_stream.arrow'));
 
             const bodyLengths = extractRecordBatchBodyLengths(pyarrowBuffer);
             expect(bodyLengths).toHaveLength(1);
@@ -211,7 +211,7 @@ describe('Zero-row RecordBatch IPC serialization', () => {
         });
 
         test('should read PyArrow non-zero row stream', () => {
-            const pyarrowBuffer = readFileSync(resolve(pyarrowTestData, 'nonzero_row_stream.arrow'));
+            const pyarrowBuffer = readFileSync(path.resolve(pyarrowTestData, 'nonzero_row_stream.arrow'));
             const table = tableFromIPC(pyarrowBuffer);
 
             expect(table.numRows).toBe(3);
@@ -228,7 +228,7 @@ describe('Zero-row RecordBatch IPC serialization', () => {
         });
 
         test('should read PyArrow zero-row multi-type stream', () => {
-            const pyarrowBuffer = readFileSync(resolve(pyarrowTestData, 'zero_row_multi_type_stream.arrow'));
+            const pyarrowBuffer = readFileSync(path.resolve(pyarrowTestData, 'zero_row_multi_type_stream.arrow'));
             const table = tableFromIPC(pyarrowBuffer);
 
             expect(table.numRows).toBe(0);
@@ -244,7 +244,7 @@ describe('Zero-row RecordBatch IPC serialization', () => {
         });
 
         test('should read PyArrow mixed zero + non-zero row stream', () => {
-            const pyarrowBuffer = readFileSync(resolve(pyarrowTestData, 'mixed_zero_nonzero_stream.arrow'));
+            const pyarrowBuffer = readFileSync(path.resolve(pyarrowTestData, 'mixed_zero_nonzero_stream.arrow'));
             const table = tableFromIPC(pyarrowBuffer);
 
             expect(table.numRows).toBe(3);
@@ -266,7 +266,7 @@ describe('Zero-row RecordBatch IPC serialization', () => {
             const jsBuffer = writer.toUint8Array(true);
 
             // PyArrow
-            const pyBuffer = readFileSync(resolve(pyarrowTestData, 'zero_row_stream.arrow'));
+            const pyBuffer = readFileSync(path.resolve(pyarrowTestData, 'zero_row_stream.arrow'));
 
             const jsBodyLengths = extractRecordBatchBodyLengths(jsBuffer);
             const pyBodyLengths = extractRecordBatchBodyLengths(pyBuffer);
@@ -283,7 +283,7 @@ describe('Zero-row RecordBatch IPC serialization', () => {
             writer.finish();
             const jsBuffer = writer.toUint8Array(true);
 
-            const pyBuffer = readFileSync(resolve(pyarrowTestData, 'nonzero_row_stream.arrow'));
+            const pyBuffer = readFileSync(path.resolve(pyarrowTestData, 'nonzero_row_stream.arrow'));
 
             const jsTable = tableFromIPC(jsBuffer);
             const pyTable = tableFromIPC(pyBuffer);

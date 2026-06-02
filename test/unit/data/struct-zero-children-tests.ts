@@ -27,12 +27,12 @@ describe('Struct with zero children', () => {
 
     test('makeData with empty children preserves explicit length', () => {
         const data = makeData({ type: new Struct([]), length: 50, nullCount: 0, children: [] });
-        expect(data.length).toBe(50);
+        expect(data).toHaveLength(50);
     });
 
     test('makeData with empty children and no length defaults to 0', () => {
         const data = makeData({ type: new Struct([]), children: [] });
-        expect(data.length).toBe(0);
+        expect(data).toHaveLength(0);
     });
 
     test('setChildAt preserves numRows after column replacement', () => {
