@@ -29,12 +29,41 @@ import {
 
 const testDataDir = path.resolve(process.cwd(), 'test/data');
 
+/** Helper to create a zero-column IPC stream buffer with the given number of rows. */
+function createZeroColumnIPCBuffer(numRows: number): Uint8Array {
+    const schema = new Schema([]);
+    const data = makeData({
+        type: new Struct([]),
+        length: numRows,
+        nullCount: 0,
+        children: [],
+    });
+    const batch = new RecordBatch(schema, data);
+    const writer = new RecordBatchStreamWriter();
+    writer.write(batch);
+    writer.finish();
+    return writer.toUint8Array(true);
+}
+
 describe('Zero-column RecordBatch numRows preservation', () => {
 
     describe('PyArrow interop', () => {
 
         test('should read PyArrow zero-column stream and preserve numRows', () => {
             const buffer = readFileSync(path.resolve(testDataDir, 'zero_column_batch.arrow'));
+            const table = tableFromIPC(buffer);
+
+            expect(table.numRows).toBe(100);
+            expect(table.numCols).toBe(0);
+            expect(table.batches).toHaveLength(1);
+            expect(table.batches[0].numRows).toBe(100);
+        });
+    });
+
+    describe('IPC round-trip', () => {
+
+        test('should read zero-column stream and preserve numRows', () => {
+            const buffer = createZeroColumnIPCBuffer(100);
             const table = tableFromIPC(buffer);
 
             expect(table.numRows).toBe(100);
