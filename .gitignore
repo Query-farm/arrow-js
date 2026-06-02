@@ -94,3 +94,6 @@ dev/release/rat.xml
 
 # Release
 dev/release/.env
+
+# Python virtualenv for python-checks scratch tooling
+python-checks/.venv/
